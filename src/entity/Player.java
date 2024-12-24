@@ -1,6 +1,9 @@
 package entity;
 
+import java.lang.Math;
+
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -24,6 +27,13 @@ public class Player extends Entity{
 		
 		screenX = gp.screenWidth/2 - (gp.tileSize/2);
 		screenY = gp.screenHeight/2 - (gp.tileSize/2);
+
+		solidArea = new Rectangle(0, 0, 96, 96);
+		solidArea.x = 16;
+		solidArea.x = 32;
+		solidArea.width = 64;
+		solidArea.height = 64;
+
 		
 		
 		setDefaultValues();
@@ -57,21 +67,62 @@ public class Player extends Entity{
 		}
 	}
 	public void update()  {
+		boolean isStanding = true;
+
+		// Moving in one direction
 		if(keyH.upPressed == true)  {
 			direction = "up";
-			worldY -= speed;
+			isStanding = false;
 		}
 		if(keyH.downPressed == true)  {
 			direction = "down";
-			worldY += speed;
+			isStanding = false;
 		}
 		if(keyH.leftPressed == true)  {
 			direction = "left";
-			worldX -= speed;
+			isStanding = false;
 		}
 		if(keyH.rightPressed == true)  {
 			direction = "right";
-			worldX += speed;;
+			isStanding = false;
+		}
+
+
+		// check tile collision
+		collisionOn = false;
+		gp.cChecker.checkTile(this);
+
+		if (!collisionOn && !isStanding) {
+			switch (direction) {
+				case "upleft":
+					worldY -= speed/Math.sqrt(2);
+					worldX -= speed/Math.sqrt(2);
+					break;
+				case "upright":
+					worldY -= speed/Math.sqrt(2);
+					worldX += speed/Math.sqrt(2);
+					break;
+				case "downleft":
+					worldY += speed/Math.sqrt(2);
+					worldX -= speed/Math.sqrt(2);
+					break;
+				case "downright":
+					worldY += speed/Math.sqrt(2);
+					worldX += speed/Math.sqrt(2);
+					break;
+				case "up": 
+					worldY -= speed; 
+					break;
+				case "down": 
+					worldY += speed; 
+					break;
+				case "left": 
+					worldX -= speed; 
+					break;
+				case "right": 
+					worldX += speed; 
+					break;
+			}
 		}
 		
 	}
